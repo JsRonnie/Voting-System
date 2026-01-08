@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
+const candidatePlaceholder =
+  'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
+
 export default function ActiveElectionPane({ election, profile, onBallotCast }) {
   const [candidates, setCandidates] = useState([])
   const [selectedId, setSelectedId] = useState(null)
@@ -31,7 +34,11 @@ export default function ActiveElectionPane({ election, profile, onBallotCast }) 
     })
     setIsSubmitting(false)
     if (error) {
-      setMessage(error.message)
+      if (error.code === '23505' || error.message?.includes('one_vote_per_election')) {
+        setMessage('You already voted in this election. Visit History to review your ballot.')
+      } else {
+        setMessage(error.message)
+      }
       return
     }
     setMessage('Vote cast!')
@@ -57,9 +64,12 @@ export default function ActiveElectionPane({ election, profile, onBallotCast }) 
             }`}
             onClick={() => setSelectedId(candidate.id)}
           >
-            {candidate.photo_url ? (
-              <img src={candidate.photo_url} alt={candidate.name} className="mb-4 h-40 w-full rounded-2xl object-cover" />
-            ) : null}
+            <img
+              src={candidate.photo_url || candidatePlaceholder}
+              alt={candidate.name}
+              className="mb-4 h-40 w-full rounded-2xl object-cover"
+              loading="lazy"
+            />
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-white/50">
                 <span>{candidate.slate ?? 'Independent'}</span>

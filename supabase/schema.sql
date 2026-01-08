@@ -198,6 +198,9 @@ create policy "organizer-owns-election" on public.elections
 create policy "organizer-updates-election" on public.elections
   for update using (auth.uid() = owner_id) with check (auth.uid() = owner_id);
 
+create policy "organizer-deletes-election" on public.elections
+  for delete using (auth.uid() = owner_id);
+
 create policy "public-candidates-readable" on public.candidates
   for select using (true);
 

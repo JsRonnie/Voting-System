@@ -6,6 +6,7 @@ export default function ElectionDashboard({ election, onPublish }) {
   const [candidates, setCandidates] = useState([])
   const [liveCounts, setLiveCounts] = useState([])
   const [isPublishing, setIsPublishing] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState('')
   const [statusMessage, setStatusMessage] = useState('')
   const [deadlineInput, setDeadlineInput] = useState('')
@@ -70,6 +71,23 @@ export default function ElectionDashboard({ election, onPublish }) {
     onPublish?.()
   }
 
+  const handleDelete = async () => {
+    if (!election) return
+    const userConfirmed = window.confirm('Delete this election? This cannot be undone.')
+    if (!userConfirmed) return
+    setIsDeleting(true)
+    setError('')
+    setStatusMessage('')
+    const { error: deleteError } = await supabase.from('elections').delete().eq('id', election.id)
+    setIsDeleting(false)
+    if (deleteError) {
+      setError(deleteError.message)
+      return
+    }
+    setStatusMessage('Election deleted')
+    onPublish?.()
+  }
+
   const voteMap = liveCounts.reduce((map, entry) => {
     map[entry.candidate_id] = entry.vote_total
     return map
@@ -118,13 +136,22 @@ export default function ElectionDashboard({ election, onPublish }) {
             <p className="text-xs uppercase tracking-[0.3em] text-brand-200">Live vote count</p>
             <p className="text-sm text-white/70">SECURITY DEFINER view hides voter identities.</p>
           </div>
-          <button
-            onClick={handlePublish}
-            disabled={election?.results_visible || isPublishing}
-            className="rounded-full bg-success/90 px-5 py-2 text-sm font-semibold text-surface transition hover:bg-success disabled:cursor-not-allowed disabled:bg-white/10"
-          >
-            {election?.results_visible ? 'Leaderboard live' : isPublishing ? 'Publishing…' : 'Publish results'}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={handleDelete}
+              disabled={!election || isDeleting}
+              className="rounded-full border border-danger/60 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-danger/80 transition hover:border-danger hover:bg-danger/10 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isDeleting ? 'Deleting…' : 'Delete election'}
+            </button>
+            <button
+              onClick={handlePublish}
+              disabled={election?.results_visible || isPublishing}
+              className="rounded-full bg-success/90 px-5 py-2 text-sm font-semibold text-surface transition hover:bg-success disabled:cursor-not-allowed disabled:bg-white/10"
+            >
+              {election?.results_visible ? 'Leaderboard live' : isPublishing ? 'Publishing…' : 'Publish results'}
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-3">

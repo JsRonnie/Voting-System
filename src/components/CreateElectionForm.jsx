@@ -248,7 +248,7 @@ export default function CreateElectionForm({ profile, onCreated }) {
             <select
               value={form.visibility}
               onChange={(event) => setForm((prev) => ({ ...prev, visibility: event.target.value }))}
-              className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white bg-surface"
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-black bg-surface"
             >
               <option value="private">Private — code only</option>
               <option value="public">Public — show in gallery</option>
@@ -259,7 +259,7 @@ export default function CreateElectionForm({ profile, onCreated }) {
             <select
               value={form.status}
               onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value }))}
-              className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white bg-surface"
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-black bg-surface"
             >
               <option value="draft">Draft</option>
               <option value="scheduled">Scheduled</option>
