@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Chivo:wght@300;500;700&family=Sora:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color: #fff;
+    background-color: #020617;
+    font-family: 'Chivo', 'Sora', sans-serif;
+    --mesh-layer: radial-gradient(circle at 20% 20%, rgba(255, 179, 71, 0.2), transparent 60%), radial-gradient(circle at 80% 0%, rgba(58, 77, 255, 0.25), transparent 45%);
+  }
+
+  body {
+    @apply min-h-screen bg-surface text-white m-0;
+    background-image: linear-gradient(180deg, rgba(4, 13, 45, 0.9), rgba(2, 6, 23, 1)), var(--mesh-layer, none);
+  }
+
+  #root {
+    @apply min-h-screen bg-transparent;
+  }
+
+  a {
+    @apply text-brand-300 font-medium;
+  }
+
+  button:focus-visible {
+    @apply ring-2 ring-offset-2 ring-brand-400 ring-offset-surface;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 border border-white/10 backdrop-blur-xl shadow-glass rounded-3xl;
+  }
+
+  .status-pill {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide;
+  }
+}
